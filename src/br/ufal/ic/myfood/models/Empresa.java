@@ -10,6 +10,7 @@ public abstract class Empresa implements Serializable {
     private String endereco;
     private int idDono;
     private List<Integer> idsProdutos;
+    private List<Integer> idsEntregadores;
 
     public Empresa(int id, String nome, String endereco, int idDono) {
         this.id = id;
@@ -17,6 +18,7 @@ public abstract class Empresa implements Serializable {
         this.endereco = endereco;
         this.idDono = idDono;
         this.idsProdutos = new ArrayList<>();
+        this.idsEntregadores = new ArrayList<>();
     }
 
     public int getId() {
@@ -37,6 +39,10 @@ public abstract class Empresa implements Serializable {
 
     public List<Integer> getIdsProdutos() {
         return idsProdutos;
+    }
+
+    public List<Integer> getIdsEntregadores() {
+        return idsEntregadores;
     }
 
     public abstract String getTipoEmpresa();

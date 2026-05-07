@@ -71,6 +71,67 @@ public class EmpresaService {
         mercado.setFecha(fecha);
     }
 
+    public void cadastrarEntregador(int empresaId, int entregadorId) throws Exception {
+        Empresa empresa = dados.getEmpresas().get(empresaId);
+        Usuario usuario = dados.getUsuarios().get(entregadorId);
+
+        if (!(usuario instanceof Entregador)) {
+            throw new MyFoodException("Usuario nao e um entregador");
+        }
+
+        Entregador entregador = (Entregador) usuario;
+
+        if (!empresa.getIdsEntregadores().contains(entregadorId)) {
+            empresa.getIdsEntregadores().add(entregadorId);
+        }
+
+        if (!entregador.getIdsEmpresas().contains(empresaId)) {
+            entregador.getIdsEmpresas().add(empresaId);
+        }
+    }
+
+    public String getEntregadores(int empresaId) {
+        Empresa empresa = dados.getEmpresas().get(empresaId);
+
+        List<String> emails = new ArrayList<>();
+
+        for (Integer idEntregador : empresa.getIdsEntregadores()) {
+            Entregador entregador = (Entregador) dados.getUsuarios().get(idEntregador);
+            emails.add(entregador.getEmail());
+        }
+
+        return "{[" + String.join(", ", emails) + "]}";
+    }
+
+    public String getEmpresas(int entregadorId) throws Exception {
+        Usuario usuario = dados.getUsuarios().get(entregadorId);
+
+        if (!(usuario instanceof Entregador)) {
+            throw new MyFoodException("Usuario nao e um entregador");
+        }
+
+        Entregador entregador = (Entregador) usuario;
+        List<String> lista = new ArrayList<>();
+
+        for (Integer idEmpresa : entregador.getIdsEmpresas()) {
+            Empresa empresa = dados.getEmpresas().get(idEmpresa);
+            lista.add("[" + empresa.getNome() + ", " + empresa.getEndereco() + "]");
+        }
+
+        return "{[" + String.join(", ", lista) + "]}";
+    }
+
+    public int quantidadeEmpresasDoEntregador(int entregadorId) throws Exception {
+        Usuario usuario = dados.getUsuarios().get(entregadorId);
+
+        if (!(usuario instanceof Entregador)) {
+            throw new MyFoodException("Usuario nao e um entregador");
+        }
+
+        Entregador entregador = (Entregador) usuario;
+        return entregador.getIdsEmpresas().size();
+    }
+
     public String getEmpresasDoUsuario(int idDono) throws Exception {
         Usuario usuario = dados.getUsuarios().get(idDono);
 

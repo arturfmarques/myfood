@@ -4,6 +4,7 @@ import br.ufal.ic.myfood.exceptions.MyFoodException;
 import br.ufal.ic.myfood.models.Cliente;
 import br.ufal.ic.myfood.models.DadosSistema;
 import br.ufal.ic.myfood.models.DonoEmpresa;
+import br.ufal.ic.myfood.models.Entregador;
 import br.ufal.ic.myfood.models.Usuario;
 
 public class UsuarioService {
@@ -40,6 +41,22 @@ public class UsuarioService {
         dados.setProximoIdUsuario(id + 1);
     }
 
+    public void criarEntregador(String nome, String email, String senha, String endereco, String veiculo, String placa) throws Exception {
+        validarNome(nome);
+        validarEmail(email);
+        validarSenha(senha);
+        validarEndereco(endereco);
+        validarVeiculo(veiculo);
+        validarPlaca(placa);
+        verificarPlacaDuplicada(placa);
+        verificarEmailDuplicado(email);
+
+        int id = dados.getProximoIdUsuario();
+        Entregador entregador = new Entregador(id, nome, email, senha, endereco, veiculo, placa);
+        dados.getUsuarios().put(id, entregador);
+        dados.setProximoIdUsuario(id + 1);
+    }
+
     public int login(String email, String senha) throws Exception {
         for (Usuario usuario : dados.getUsuarios().values()) {
             if (usuario.getEmail().equals(email) && usuario.getSenha().equals(senha)) {
@@ -66,6 +83,14 @@ public class UsuarioService {
             return ((DonoEmpresa) usuario).getCpf();
         }
 
+        if ("veiculo".equals(atributo) && usuario instanceof Entregador) {
+            return ((Entregador) usuario).getVeiculo();
+        }
+
+        if ("placa".equals(atributo) && usuario instanceof Entregador) {
+            return ((Entregador) usuario).getPlaca();
+        }
+
         return "";
     }
 
@@ -73,6 +98,17 @@ public class UsuarioService {
         for (Usuario usuario : dados.getUsuarios().values()) {
             if (usuario.getEmail().equals(email)) {
                 throw new MyFoodException("Conta com esse email ja existe");
+            }
+        }
+    }
+
+    private void verificarPlacaDuplicada(String placa) throws Exception {
+        for (Usuario usuario : dados.getUsuarios().values()) {
+            if (usuario instanceof Entregador) {
+                Entregador entregador = (Entregador) usuario;
+                if (entregador.getPlaca().equals(placa)) {
+                    throw new MyFoodException("Placa invalido");
+                }
             }
         }
     }
@@ -104,6 +140,18 @@ public class UsuarioService {
     private void validarCpf(String cpf) throws Exception {
         if (textoVazio(cpf) || cpf.length() != 14) {
             throw new MyFoodException("CPF invalido");
+        }
+    }
+
+    private void validarVeiculo(String veiculo) throws Exception {
+        if (textoVazio(veiculo)) {
+            throw new MyFoodException("Veiculo invalido");
+        }
+    }
+
+    private void validarPlaca(String placa) throws Exception {
+        if (textoVazio(placa)) {
+            throw new MyFoodException("Placa invalido");
         }
     }
 
