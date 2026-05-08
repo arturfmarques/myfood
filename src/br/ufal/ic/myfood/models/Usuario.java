@@ -38,4 +38,6 @@ public abstract class Usuario implements Serializable {
     }
 
     public abstract boolean ehDono();
+
+    public abstract boolean ehEntregador();
 }

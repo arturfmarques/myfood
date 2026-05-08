@@ -20,7 +20,7 @@ public class PedidoService {
     public int criarPedido(int idCliente, int idEmpresa) throws Exception {
         Usuario usuario = dados.getUsuarios().get(idCliente);
 
-        if (usuario == null || usuario.ehDono()) {
+        if (usuario == null || usuario.ehDono() || usuario.ehEntregador()) {
             throw new MyFoodException("Dono de empresa nao pode fazer um pedido");
         }
 
@@ -114,6 +114,24 @@ public class PedidoService {
         }
 
         pedido.setEstado("preparando");
+    }
+
+    public void liberarPedido(int numeroPedido) throws Exception {
+        Pedido pedido = dados.getPedidos().get(numeroPedido);
+
+        if (pedido == null) {
+            throw new MyFoodException("Pedido nao encontrado");
+        }
+
+        if ("pronto".equals(pedido.getEstado())) {
+            throw new MyFoodException("Pedido ja liberado");
+        }
+
+        if (!"preparando".equals(pedido.getEstado())) {
+            throw new MyFoodException("Nao e possivel liberar um produto que nao esta sendo preparado");
+        }
+
+        pedido.setEstado("pronto");
     }
 
     public void removerProduto(int numeroPedido, String nomeProduto) throws Exception {

@@ -9,21 +9,25 @@ public class DadosSistema implements Serializable {
     private Map<Integer, Empresa> empresas;
     private Map<Integer, Produto> produtos;
     private Map<Integer, Pedido> pedidos;
+    private Map<Integer, Entrega> entregas;
 
     private int proximoIdUsuario;
     private int proximoIdEmpresa;
     private int proximoIdProduto;
     private int proximoNumeroPedido;
+    private int proximoIdEntrega;
 
     public DadosSistema() {
         this.usuarios = new LinkedHashMap<>();
         this.empresas = new LinkedHashMap<>();
         this.produtos = new LinkedHashMap<>();
         this.pedidos = new LinkedHashMap<>();
+        this.entregas = new LinkedHashMap<>();
         this.proximoIdUsuario = 1;
         this.proximoIdEmpresa = 1;
         this.proximoIdProduto = 1;
         this.proximoNumeroPedido = 1;
+        this.proximoIdEntrega = 1;
     }
 
     public Map<Integer, Usuario> getUsuarios() {
@@ -40,6 +44,10 @@ public class DadosSistema implements Serializable {
 
     public Map<Integer, Pedido> getPedidos() {
         return pedidos;
+    }
+
+    public Map<Integer, Entrega> getEntregas() {
+        return entregas;
     }
 
     public int getProximoIdUsuario() {
@@ -72,5 +80,13 @@ public class DadosSistema implements Serializable {
 
     public void setProximoNumeroPedido(int proximoNumeroPedido) {
         this.proximoNumeroPedido = proximoNumeroPedido;
+    }
+
+    public int getProximoIdEntrega() {
+        return proximoIdEntrega;
+    }
+
+    public void setProximoIdEntrega(int proximoIdEntrega) {
+        this.proximoIdEntrega = proximoIdEntrega;
     }
 }

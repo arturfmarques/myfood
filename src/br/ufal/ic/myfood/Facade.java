@@ -10,6 +10,7 @@ public class Facade {
     private EmpresaService empresaService;
     private ProdutoService produtoService;
     private PedidoService pedidoService;
+    private EntregaService entregaService;
 
     public Facade() {
         this.persistenciaService = new PersistenciaService();
@@ -22,6 +23,7 @@ public class Facade {
         this.empresaService = new EmpresaService(dados);
         this.produtoService = new ProdutoService(dados);
         this.pedidoService = new PedidoService(dados);
+        this.entregaService = new EntregaService(dados);
     }
 
     public void zerarSistema() {
@@ -42,6 +44,10 @@ public class Facade {
         usuarioService.criarDono(nome, email, senha, endereco, cpf);
     }
 
+    public void criarUsuario(String nome, String email, String senha, String endereco, String veiculo, String placa) throws Exception {
+        usuarioService.criarEntregador(nome, email, senha, endereco, veiculo, placa);
+    }
+
     public int login(String email, String senha) throws Exception {
         return usuarioService.login(email, senha);
     }
@@ -52,6 +58,30 @@ public class Facade {
 
     public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String tipoCozinha) throws Exception {
         return empresaService.criarEmpresa(tipoEmpresa, dono, nome, endereco, tipoCozinha);
+    }
+
+    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String abre, String fecha, String tipoMercado) throws Exception {
+        return empresaService.criarEmpresa(tipoEmpresa, dono, nome, endereco, abre, fecha, tipoMercado);
+    }
+
+    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, boolean aberto24Horas, int numeroFuncionarios) throws Exception {
+        return empresaService.criarEmpresa(tipoEmpresa, dono, nome, endereco, aberto24Horas, numeroFuncionarios);
+    }
+
+    public void alterarFuncionamento(int mercado, String abre, String fecha) throws Exception {
+        empresaService.alterarFuncionamento(mercado, abre, fecha);
+    }
+
+    public void cadastrarEntregador(int empresa, int entregador) throws Exception {
+        empresaService.cadastrarEntregador(empresa, entregador);
+    }
+
+    public String getEntregadores(int empresa) throws Exception {
+        return empresaService.getEntregadores(empresa);
+    }
+
+    public String getEmpresas(int entregador) throws Exception {
+        return empresaService.getEmpresas(entregador);
     }
 
     public String getEmpresasDoUsuario(int idDono) throws Exception {
@@ -98,11 +128,35 @@ public class Facade {
         pedidoService.fecharPedido(numero);
     }
 
+    public void liberarPedido(int numero) throws Exception {
+        pedidoService.liberarPedido(numero);
+    }
+
     public void removerProduto(int pedido, String produto) throws Exception {
         pedidoService.removerProduto(pedido, produto);
     }
 
     public int getNumeroPedido(int cliente, int empresa, int indice) throws Exception {
         return pedidoService.getNumeroPedido(cliente, empresa, indice);
+    }
+
+    public int obterPedido(int entregador) throws Exception {
+        return entregaService.obterPedido(entregador);
+    }
+
+    public int criarEntrega(int pedido, int entregador, String destino) throws Exception {
+        return entregaService.criarEntrega(pedido, entregador, destino);
+    }
+
+    public String getEntrega(int id, String atributo) throws Exception {
+        return entregaService.getEntrega(id, atributo);
+    }
+
+    public int getIdEntrega(int pedido) throws Exception {
+        return entregaService.getIdEntrega(pedido);
+    }
+
+    public void entregar(int entrega) throws Exception {
+        entregaService.entregar(entrega);
     }
 }

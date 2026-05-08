@@ -16,4 +16,9 @@ public class DonoEmpresa extends Usuario {
     public boolean ehDono() {
         return true;
     }
+
+    @Override
+    public boolean ehEntregador() {
+        return false;
+    }
 }

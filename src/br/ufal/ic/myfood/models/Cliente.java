@@ -10,4 +10,9 @@ public class Cliente extends Usuario {
     public boolean ehDono() {
         return false;
     }
+
+    @Override
+    public boolean ehEntregador() {
+        return false;
+    }
 }
