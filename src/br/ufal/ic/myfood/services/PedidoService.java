@@ -11,37 +11,37 @@ import java.util.List;
 import java.util.Locale;
 
 public class PedidoService {
-    private DadosSistema dados;
+    private DadosSistema dadosDoSistema;
 
-    public PedidoService(DadosSistema dados) {
-        this.dados = dados;
+    public PedidoService(DadosSistema dadosDoSistema) {
+        this.dadosDoSistema = dadosDoSistema;
     }
 
-    public int criarPedido(int idCliente, int idEmpresa) throws Exception {
-        Usuario usuario = dados.getUsuarios().get(idCliente);
+    public int criarPedido(int idDoCliente, int idDaEmpresa) throws Exception {
+        Usuario usuario = dadosDoSistema.getUsuarios().get(idDoCliente);
 
         if (usuario == null || usuario.ehDono() || usuario.ehEntregador()) {
             throw new MyFoodException("Dono de empresa nao pode fazer um pedido");
         }
 
-        for (Pedido pedido : dados.getPedidos().values()) {
-            if (pedido.getIdCliente() == idCliente &&
-                    pedido.getIdEmpresa() == idEmpresa &&
+        for (Pedido pedido : dadosDoSistema.getPedidos().values()) {
+            if (pedido.getIdDoCliente() == idDoCliente &&
+                    pedido.getIdDaEmpresa() == idDaEmpresa &&
                     "aberto".equals(pedido.getEstado())) {
                 throw new MyFoodException("Nao e permitido ter dois pedidos em aberto para a mesma empresa");
             }
         }
 
-        int numero = dados.getProximoNumeroPedido();
-        Pedido pedido = new Pedido(numero, idCliente, idEmpresa);
-        dados.getPedidos().put(numero, pedido);
-        dados.setProximoNumeroPedido(numero + 1);
+        int numero = dadosDoSistema.getProximoNumeroDePedido();
+        Pedido pedido = new Pedido(numero, idDoCliente, idDaEmpresa);
+        dadosDoSistema.getPedidos().put(numero, pedido);
+        dadosDoSistema.setProximoNumeroDePedido(numero + 1);
 
         return numero;
     }
 
-    public void adicionarProduto(int numeroPedido, int idProduto) throws Exception {
-        Pedido pedido = dados.getPedidos().get(numeroPedido);
+    public void adicionarProduto(int numeroDoPedido, int idDoProduto) throws Exception {
+        Pedido pedido = dadosDoSistema.getPedidos().get(numeroDoPedido);
 
         if (pedido == null) {
             throw new MyFoodException("Nao existe pedido em aberto");
@@ -51,32 +51,32 @@ public class PedidoService {
             throw new MyFoodException("Nao e possivel adcionar produtos a um pedido fechado");
         }
 
-        Produto produto = dados.getProdutos().get(idProduto);
+        Produto produto = dadosDoSistema.getProdutos().get(idDoProduto);
 
-        if (produto == null || produto.getIdEmpresa() != pedido.getIdEmpresa()) {
+        if (produto == null || produto.getIdDaEmpresa() != pedido.getIdDaEmpresa()) {
             throw new MyFoodException("O produto nao pertence a essa empresa");
         }
 
-        pedido.getIdsProdutos().add(idProduto);
+        pedido.getIdsDosProdutos().add(idDoProduto);
     }
 
-    public String getPedidos(int numeroPedido, String atributo) throws Exception {
+    public String getPedidos(int numeroDoPedido, String atributo) throws Exception {
         if (atributo == null || atributo.trim().isEmpty()) {
             throw new MyFoodException("Atributo invalido");
         }
 
-        Pedido pedido = dados.getPedidos().get(numeroPedido);
+        Pedido pedido = dadosDoSistema.getPedidos().get(numeroDoPedido);
 
         if (pedido == null) {
             throw new MyFoodException("Pedido nao encontrado");
         }
 
         if ("cliente".equals(atributo)) {
-            return dados.getUsuarios().get(pedido.getIdCliente()).getNome();
+            return dadosDoSistema.getUsuarios().get(pedido.getIdDoCliente()).getNome();
         }
 
         if ("empresa".equals(atributo)) {
-            return dados.getEmpresas().get(pedido.getIdEmpresa()).getNome();
+            return dadosDoSistema.getEmpresas().get(pedido.getIdDaEmpresa()).getNome();
         }
 
         if ("estado".equals(atributo)) {
@@ -84,30 +84,30 @@ public class PedidoService {
         }
 
         if ("produtos".equals(atributo)) {
-            List<String> nomes = new ArrayList<>();
+            List<String> nomesDosProdutos = new ArrayList<>();
 
-            for (Integer idProduto : pedido.getIdsProdutos()) {
-                nomes.add(dados.getProdutos().get(idProduto).getNome());
+            for (Integer idDoProduto : pedido.getIdsDosProdutos()) {
+                nomesDosProdutos.add(dadosDoSistema.getProdutos().get(idDoProduto).getNome());
             }
 
-            return "{[" + String.join(", ", nomes) + "]}";
+            return "{[" + String.join(", ", nomesDosProdutos) + "]}";
         }
 
         if ("valor".equals(atributo)) {
-            double total = 0.0;
+            double valorTotal = 0.0;
 
-            for (Integer idProduto : pedido.getIdsProdutos()) {
-                total += dados.getProdutos().get(idProduto).getValor();
+            for (Integer idDoProduto : pedido.getIdsDosProdutos()) {
+                valorTotal += dadosDoSistema.getProdutos().get(idDoProduto).getValor();
             }
 
-            return String.format(Locale.US, "%.2f", total);
+            return String.format(Locale.US, "%.2f", valorTotal);
         }
 
         throw new MyFoodException("Atributo nao existe");
     }
 
-    public void fecharPedido(int numeroPedido) throws Exception {
-        Pedido pedido = dados.getPedidos().get(numeroPedido);
+    public void fecharPedido(int numeroDoPedido) throws Exception {
+        Pedido pedido = dadosDoSistema.getPedidos().get(numeroDoPedido);
 
         if (pedido == null) {
             throw new MyFoodException("Pedido nao encontrado");
@@ -116,8 +116,8 @@ public class PedidoService {
         pedido.setEstado("preparando");
     }
 
-    public void liberarPedido(int numeroPedido) throws Exception {
-        Pedido pedido = dados.getPedidos().get(numeroPedido);
+    public void liberarPedido(int numeroDoPedido) throws Exception {
+        Pedido pedido = dadosDoSistema.getPedidos().get(numeroDoPedido);
 
         if (pedido == null) {
             throw new MyFoodException("Pedido nao encontrado");
@@ -134,12 +134,12 @@ public class PedidoService {
         pedido.setEstado("pronto");
     }
 
-    public void removerProduto(int numeroPedido, String nomeProduto) throws Exception {
-        if (nomeProduto == null || nomeProduto.trim().isEmpty()) {
+    public void removerProduto(int numeroDoPedido, String nomeDoProduto) throws Exception {
+        if (nomeDoProduto == null || nomeDoProduto.trim().isEmpty()) {
             throw new MyFoodException("Produto invalido");
         }
 
-        Pedido pedido = dados.getPedidos().get(numeroPedido);
+        Pedido pedido = dadosDoSistema.getPedidos().get(numeroDoPedido);
 
         if (pedido == null) {
             throw new MyFoodException("Pedido nao encontrado");
@@ -149,12 +149,12 @@ public class PedidoService {
             throw new MyFoodException("Nao e possivel remover produtos de um pedido fechado");
         }
 
-        for (int i = 0; i < pedido.getIdsProdutos().size(); i++) {
-            int idProduto = pedido.getIdsProdutos().get(i);
-            Produto produto = dados.getProdutos().get(idProduto);
+        for (int indice = 0; indice < pedido.getIdsDosProdutos().size(); indice++) {
+            int idDoProduto = pedido.getIdsDosProdutos().get(indice);
+            Produto produto = dadosDoSistema.getProdutos().get(idDoProduto);
 
-            if (produto.getNome().equals(nomeProduto)) {
-                pedido.getIdsProdutos().remove(i);
+            if (produto.getNome().equals(nomeDoProduto)) {
+                pedido.getIdsDosProdutos().remove(indice);
                 return;
             }
         }
@@ -162,15 +162,15 @@ public class PedidoService {
         throw new MyFoodException("Produto nao encontrado");
     }
 
-    public int getNumeroPedido(int idCliente, int idEmpresa, int indice) {
-        List<Pedido> lista = new ArrayList<>();
+    public int getNumeroPedido(int idDoCliente, int idDaEmpresa, int indice) {
+        List<Pedido> pedidosEncontrados = new ArrayList<>();
 
-        for (Pedido pedido : dados.getPedidos().values()) {
-            if (pedido.getIdCliente() == idCliente && pedido.getIdEmpresa() == idEmpresa) {
-                lista.add(pedido);
+        for (Pedido pedido : dadosDoSistema.getPedidos().values()) {
+            if (pedido.getIdDoCliente() == idDoCliente && pedido.getIdDaEmpresa() == idDaEmpresa) {
+                pedidosEncontrados.add(pedido);
             }
         }
 
-        return lista.get(indice).getNumero();
+        return pedidosEncontrados.get(indice).getNumero();
     }
 }

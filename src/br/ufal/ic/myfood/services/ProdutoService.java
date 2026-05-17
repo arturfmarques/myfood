@@ -10,55 +10,55 @@ import java.util.List;
 import java.util.Locale;
 
 public class ProdutoService {
-    private DadosSistema dados;
+    private DadosSistema dadosDoSistema;
 
-    public ProdutoService(DadosSistema dados) {
-        this.dados = dados;
+    public ProdutoService(DadosSistema dadosDoSistema) {
+        this.dadosDoSistema = dadosDoSistema;
     }
 
-    public int criarProduto(int idEmpresa, String nome, double valor, String categoria) throws Exception {
+    public int criarProduto(int idDaEmpresa, String nome, double valor, String categoria) throws Exception {
         validarNome(nome);
         validarValor(valor);
         validarCategoria(categoria);
 
-        Empresa empresa = dados.getEmpresas().get(idEmpresa);
+        Empresa empresa = dadosDoSistema.getEmpresas().get(idDaEmpresa);
 
         if (empresa == null) {
             throw new MyFoodException("Empresa nao encontrada");
         }
 
-        for (Integer idProduto : empresa.getIdsProdutos()) {
-            Produto produto = dados.getProdutos().get(idProduto);
+        for (Integer idDoProduto : empresa.getIdsDosProdutos()) {
+            Produto produto = dadosDoSistema.getProdutos().get(idDoProduto);
             if (produto.getNome().equals(nome)) {
                 throw new MyFoodException("Ja existe um produto com esse nome para essa empresa");
             }
         }
 
-        int id = dados.getProximoIdProduto();
-        Produto produto = new Produto(id, nome, valor, categoria, idEmpresa);
-        dados.getProdutos().put(id, produto);
-        empresa.getIdsProdutos().add(id);
-        dados.setProximoIdProduto(id + 1);
+        int id = dadosDoSistema.getProximoIdDeProduto();
+        Produto produto = new Produto(id, nome, valor, categoria, idDaEmpresa);
+        dadosDoSistema.getProdutos().put(id, produto);
+        empresa.getIdsDosProdutos().add(id);
+        dadosDoSistema.setProximoIdDeProduto(id + 1);
 
         return id;
     }
 
-    public void editarProduto(int idProduto, String nome, double valor, String categoria) throws Exception {
+    public void editarProduto(int idDoProduto, String nome, double valor, String categoria) throws Exception {
         validarNome(nome);
         validarValor(valor);
         validarCategoria(categoria);
 
-        Produto produto = dados.getProdutos().get(idProduto);
+        Produto produto = dadosDoSistema.getProdutos().get(idDoProduto);
 
         if (produto == null) {
             throw new MyFoodException("Produto nao cadastrado");
         }
 
-        Empresa empresa = dados.getEmpresas().get(produto.getIdEmpresa());
+        Empresa empresa = dadosDoSistema.getEmpresas().get(produto.getIdDaEmpresa());
 
-        for (Integer outroId : empresa.getIdsProdutos()) {
-            Produto outroProduto = dados.getProdutos().get(outroId);
-            if (outroProduto.getNome().equals(nome) && outroProduto.getId() != idProduto) {
+        for (Integer outroIdDeProduto : empresa.getIdsDosProdutos()) {
+            Produto outroProduto = dadosDoSistema.getProdutos().get(outroIdDeProduto);
+            if (outroProduto.getNome().equals(nome) && outroProduto.getId() != idDoProduto) {
                 throw new MyFoodException("Ja existe um produto com esse nome para essa empresa");
             }
         }
@@ -68,8 +68,8 @@ public class ProdutoService {
         produto.setCategoria(categoria);
     }
 
-    public String getProduto(String nome, int idEmpresa, String atributo) throws Exception {
-        Produto produto = buscarProdutoPorNomeNaEmpresa(nome, idEmpresa);
+    public String getProduto(String nome, int idDaEmpresa, String atributo) throws Exception {
+        Produto produto = buscarProdutoPorNomeNaEmpresa(nome, idDaEmpresa);
 
         if (produto == null) {
             throw new MyFoodException("Produto nao encontrado");
@@ -79,37 +79,37 @@ public class ProdutoService {
         if ("categoria".equals(atributo)) return produto.getCategoria();
 
         if ("empresa".equals(atributo)) {
-            return dados.getEmpresas().get(produto.getIdEmpresa()).getNome();
+            return dadosDoSistema.getEmpresas().get(produto.getIdDaEmpresa()).getNome();
         }
 
         throw new MyFoodException("Atributo nao existe");
     }
 
-    public String listarProdutos(int idEmpresa) throws Exception {
-        Empresa empresa = dados.getEmpresas().get(idEmpresa);
+    public String listarProdutos(int idDaEmpresa) throws Exception {
+        Empresa empresa = dadosDoSistema.getEmpresas().get(idDaEmpresa);
 
         if (empresa == null) {
             throw new MyFoodException("Empresa nao encontrada");
         }
 
-        List<String> nomes = new ArrayList<>();
+        List<String> nomesDosProdutos = new ArrayList<>();
 
-        for (Integer idProduto : empresa.getIdsProdutos()) {
-            nomes.add(dados.getProdutos().get(idProduto).getNome());
+        for (Integer idDoProduto : empresa.getIdsDosProdutos()) {
+            nomesDosProdutos.add(dadosDoSistema.getProdutos().get(idDoProduto).getNome());
         }
 
-        return "{[" + String.join(", ", nomes) + "]}";
+        return "{[" + String.join(", ", nomesDosProdutos) + "]}";
     }
 
-    private Produto buscarProdutoPorNomeNaEmpresa(String nome, int idEmpresa) {
-        Empresa empresa = dados.getEmpresas().get(idEmpresa);
+    private Produto buscarProdutoPorNomeNaEmpresa(String nome, int idDaEmpresa) {
+        Empresa empresa = dadosDoSistema.getEmpresas().get(idDaEmpresa);
 
         if (empresa == null) {
             return null;
         }
 
-        for (Integer idProduto : empresa.getIdsProdutos()) {
-            Produto produto = dados.getProdutos().get(idProduto);
+        for (Integer idDoProduto : empresa.getIdsDosProdutos()) {
+            Produto produto = dadosDoSistema.getProdutos().get(idDoProduto);
             if (produto.getNome().equals(nome)) {
                 return produto;
             }

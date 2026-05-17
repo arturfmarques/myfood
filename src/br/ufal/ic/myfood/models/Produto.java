@@ -7,14 +7,14 @@ public class Produto implements Serializable {
     private String nome;
     private double valor;
     private String categoria;
-    private int idEmpresa;
+    private int idDaEmpresa;
 
-    public Produto(int id, String nome, double valor, String categoria, int idEmpresa) {
+    public Produto(int id, String nome, double valor, String categoria, int idDaEmpresa) {
         this.id = id;
         this.nome = nome;
         this.valor = valor;
         this.categoria = categoria;
-        this.idEmpresa = idEmpresa;
+        this.idDaEmpresa = idDaEmpresa;
     }
 
     public int getId() {
@@ -33,8 +33,8 @@ public class Produto implements Serializable {
         return categoria;
     }
 
-    public int getIdEmpresa() {
-        return idEmpresa;
+    public int getIdDaEmpresa() {
+        return idDaEmpresa;
     }
 
     public void setNome(String nome) {
