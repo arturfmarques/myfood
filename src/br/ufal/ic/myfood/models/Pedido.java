@@ -6,37 +6,37 @@ import java.util.List;
 
 public class Pedido implements Serializable {
     private int numero;
-    private int idCliente;
-    private int idEmpresa;
+    private int idDoCliente;
+    private int idDaEmpresa;
     private String estado;
-    private List<Integer> idsProdutos;
+    private List<Integer> idsDosProdutos;
 
-    public Pedido(int numero, int idCliente, int idEmpresa) {
+    public Pedido(int numero, int idDoCliente, int idDaEmpresa) {
         this.numero = numero;
-        this.idCliente = idCliente;
-        this.idEmpresa = idEmpresa;
+        this.idDoCliente = idDoCliente;
+        this.idDaEmpresa = idDaEmpresa;
         this.estado = "aberto";
-        this.idsProdutos = new ArrayList<>();
+        this.idsDosProdutos = new ArrayList<>();
     }
 
     public int getNumero() {
         return numero;
     }
 
-    public int getIdCliente() {
-        return idCliente;
+    public int getIdDoCliente() {
+        return idDoCliente;
     }
 
-    public int getIdEmpresa() {
-        return idEmpresa;
+    public int getIdDaEmpresa() {
+        return idDaEmpresa;
     }
 
     public String getEstado() {
         return estado;
     }
 
-    public List<Integer> getIdsProdutos() {
-        return idsProdutos;
+    public List<Integer> getIdsDosProdutos() {
+        return idsDosProdutos;
     }
 
     public void setEstado(String estado) {

@@ -7,150 +7,145 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmpresaService {
-    private DadosSistema dados;
+    private DadosSistema dadosDoSistema;
 
-    public EmpresaService(DadosSistema dados) {
-        this.dados = dados;
+    public EmpresaService(DadosSistema dadosDoSistema) {
+        this.dadosDoSistema = dadosDoSistema;
     }
 
-    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String tipoCozinha) throws Exception {
+    public int criarEmpresa(String tipoEmpresa, int idDoDono, String nome, String endereco, String tipoCozinha) throws Exception {
         validarTipoEmpresa(tipoEmpresa, "restaurante");
         validarNome(nome);
         validarEndereco(endereco);
-        validarDono(dono);
-        validarDuplicidade(dono, nome, endereco);
+        validarDono(idDoDono);
+        validarDuplicidade(idDoDono, nome, endereco);
 
-        int id = dados.getProximoIdEmpresa();
-        Restaurante restaurante = new Restaurante(id, nome, endereco, dono, tipoCozinha);
-        dados.getEmpresas().put(id, restaurante);
-        dados.setProximoIdEmpresa(id + 1);
+        int id = dadosDoSistema.getProximoIdDeEmpresa();
+        Restaurante restaurante = new Restaurante(id, nome, endereco, idDoDono, tipoCozinha);
+        dadosDoSistema.getEmpresas().put(id, restaurante);
+        dadosDoSistema.setProximoIdDeEmpresa(id + 1);
         return id;
     }
 
-    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, String abre, String fecha, String tipoMercado) throws Exception {
+    public int criarEmpresa(String tipoEmpresa, int idDoDono, String nome, String endereco, String abre, String fecha, String tipoMercado) throws Exception {
         validarTipoEmpresa(tipoEmpresa, "mercado");
         validarNome(nome);
         validarEndereco(endereco);
-        validarDono(dono);
+        validarDono(idDoDono);
         validarHorarioCadastro(abre, fecha);
         validarTipoMercado(tipoMercado);
-        validarDuplicidade(dono, nome, endereco);
+        validarDuplicidade(idDoDono, nome, endereco);
 
-        int id = dados.getProximoIdEmpresa();
-        Mercado mercado = new Mercado(id, nome, endereco, dono, abre, fecha, tipoMercado);
-        dados.getEmpresas().put(id, mercado);
-        dados.setProximoIdEmpresa(id + 1);
+        int id = dadosDoSistema.getProximoIdDeEmpresa();
+        Mercado mercado = new Mercado(id, nome, endereco, idDoDono, abre, fecha, tipoMercado);
+        dadosDoSistema.getEmpresas().put(id, mercado);
+        dadosDoSistema.setProximoIdDeEmpresa(id + 1);
         return id;
     }
 
-    public int criarEmpresa(String tipoEmpresa, int dono, String nome, String endereco, boolean aberto24Horas, int numeroFuncionarios) throws Exception {
+    public int criarEmpresa(String tipoEmpresa, int idDoDono, String nome, String endereco, boolean aberto24Horas, int numeroDeFuncionarios) throws Exception {
         validarTipoEmpresa(tipoEmpresa, "farmacia");
         validarNome(nome);
         validarEndereco(endereco);
-        validarDono(dono);
-        validarDuplicidade(dono, nome, endereco);
+        validarDono(idDoDono);
+        validarDuplicidade(idDoDono, nome, endereco);
 
-        int id = dados.getProximoIdEmpresa();
-        Farmacia farmacia = new Farmacia(id, nome, endereco, dono, aberto24Horas, numeroFuncionarios);
-        dados.getEmpresas().put(id, farmacia);
-        dados.setProximoIdEmpresa(id + 1);
+        int id = dadosDoSistema.getProximoIdDeEmpresa();
+        Farmacia farmacia = new Farmacia(id, nome, endereco, idDoDono, aberto24Horas, numeroDeFuncionarios);
+        dadosDoSistema.getEmpresas().put(id, farmacia);
+        dadosDoSistema.setProximoIdDeEmpresa(id + 1);
         return id;
     }
 
-    public void alterarFuncionamento(int mercadoId, String abre, String fecha) throws Exception {
-        Empresa empresa = dados.getEmpresas().get(mercadoId);
+    public void alterarFuncionamento(int idDoMercado, String abre, String fecha) throws Exception {
+        Empresa empresa = dadosDoSistema.getEmpresas().get(idDoMercado);
 
-        if (!(empresa instanceof Mercado)) {
+        if (!(empresa instanceof Mercado mercado)) {
             throw new MyFoodException("Nao e um mercado valido");
         }
 
         validarHorarioAlteracao(abre, fecha);
 
-        Mercado mercado = (Mercado) empresa;
         mercado.setAbre(abre);
         mercado.setFecha(fecha);
     }
 
-    public void cadastrarEntregador(int empresaId, int entregadorId) throws Exception {
-        Empresa empresa = dados.getEmpresas().get(empresaId);
-        Usuario usuario = dados.getUsuarios().get(entregadorId);
+    public void cadastrarEntregador(int idDaEmpresa, int idDoEntregador) throws Exception {
+        Empresa empresa = dadosDoSistema.getEmpresas().get(idDaEmpresa);
+        Usuario usuario = dadosDoSistema.getUsuarios().get(idDoEntregador);
 
-        if (!(usuario instanceof Entregador)) {
+        if (!(usuario instanceof Entregador entregador)) {
             throw new MyFoodException("Usuario nao e um entregador");
         }
 
-        Entregador entregador = (Entregador) usuario;
-
-        if (!empresa.getIdsEntregadores().contains(entregadorId)) {
-            empresa.getIdsEntregadores().add(entregadorId);
+        if (!empresa.getIdsDosEntregadores().contains(idDoEntregador)) {
+            empresa.getIdsDosEntregadores().add(idDoEntregador);
         }
 
-        if (!entregador.getIdsEmpresas().contains(empresaId)) {
-            entregador.getIdsEmpresas().add(empresaId);
+        if (!entregador.getIdsDasEmpresas().contains(idDaEmpresa)) {
+            entregador.getIdsDasEmpresas().add(idDaEmpresa);
         }
     }
 
-    public String getEntregadores(int empresaId) {
-        Empresa empresa = dados.getEmpresas().get(empresaId);
+    public String getEntregadores(int idDaEmpresa) {
+        Empresa empresa = dadosDoSistema.getEmpresas().get(idDaEmpresa);
 
-        List<String> emails = new ArrayList<>();
+        List<String> emailsDosEntregadores = new ArrayList<>();
 
-        for (Integer idEntregador : empresa.getIdsEntregadores()) {
-            Entregador entregador = (Entregador) dados.getUsuarios().get(idEntregador);
-            emails.add(entregador.getEmail());
+        for (Integer idDoEntregador : empresa.getIdsDosEntregadores()) {
+            Entregador entregador = (Entregador) dadosDoSistema.getUsuarios().get(idDoEntregador);
+            emailsDosEntregadores.add(entregador.getEmail());
         }
 
-        return "{[" + String.join(", ", emails) + "]}";
+        return "{[" + String.join(", ", emailsDosEntregadores) + "]}";
     }
 
-    public String getEmpresas(int entregadorId) throws Exception {
-        Usuario usuario = dados.getUsuarios().get(entregadorId);
+    public String getEmpresas(int idDoEntregador) throws Exception {
+        Usuario usuario = dadosDoSistema.getUsuarios().get(idDoEntregador);
 
-        if (!(usuario instanceof Entregador)) {
+        if (!(usuario instanceof Entregador entregador)) {
             throw new MyFoodException("Usuario nao e um entregador");
         }
 
-        Entregador entregador = (Entregador) usuario;
-        List<String> lista = new ArrayList<>();
+        List<String> empresasDoEntregador = new ArrayList<>();
 
-        for (Integer idEmpresa : entregador.getIdsEmpresas()) {
-            Empresa empresa = dados.getEmpresas().get(idEmpresa);
-            lista.add("[" + empresa.getNome() + ", " + empresa.getEndereco() + "]");
+        for (Integer idDaEmpresa : entregador.getIdsDasEmpresas()) {
+            Empresa empresa = dadosDoSistema.getEmpresas().get(idDaEmpresa);
+            empresasDoEntregador.add("[" + empresa.getNome() + ", " + empresa.getEndereco() + "]");
         }
 
-        return "{[" + String.join(", ", lista) + "]}";
+        return "{[" + String.join(", ", empresasDoEntregador) + "]}";
     }
 
-    public int quantidadeEmpresasDoEntregador(int entregadorId) throws Exception {
-        Usuario usuario = dados.getUsuarios().get(entregadorId);
+    public int quantidadeEmpresasDoEntregador(int idDoEntregador) throws Exception {
+        Usuario usuario = dadosDoSistema.getUsuarios().get(idDoEntregador);
 
-        if (!(usuario instanceof Entregador)) {
+        if (!(usuario instanceof Entregador entregador)) {
             throw new MyFoodException("Usuario nao e um entregador");
         }
 
-        Entregador entregador = (Entregador) usuario;
-        return entregador.getIdsEmpresas().size();
+        return entregador.getIdsDasEmpresas().size();
     }
 
-    public String getEmpresasDoUsuario(int idDono) throws Exception {
-        Usuario usuario = dados.getUsuarios().get(idDono);
+    public String getEmpresasDoUsuario(int idDoDono) throws Exception {
+        Usuario usuario = dadosDoSistema.getUsuarios().get(idDoDono);
 
         if (usuario == null || !usuario.ehDono()) {
             throw new MyFoodException("Usuario nao pode criar uma empresa");
         }
 
-        List<String> lista = new ArrayList<>();
+        List<String> empresasDoDono = new ArrayList<>();
 
-        for (Empresa empresa : dados.getEmpresas().values()) {
-            if (empresa.getIdDono() == idDono) {
-                lista.add("[" + empresa.getNome() + ", " + empresa.getEndereco() + "]");
+        for (Empresa empresa : dadosDoSistema.getEmpresas().values()) {
+            if (empresa.getIdDoDono() == idDoDono) {
+                empresasDoDono.add("[" + empresa.getNome() + ", " + empresa.getEndereco() + "]");
             }
         }
 
-        return "{[" + String.join(", ", lista) + "]}";
+        return "{[" + String.join(", ", empresasDoDono) + "]}";
     }
 
-    public int getIdEmpresa(int idDono, String nome, int indice) throws Exception {
+    public int getIdEmpresa(int idDoDono, String nome, int indice) throws Exception {
         if (textoVazio(nome)) {
             throw new MyFoodException("Nome invalido");
         }
@@ -159,27 +154,27 @@ public class EmpresaService {
             throw new MyFoodException("Indice invalido");
         }
 
-        List<Empresa> lista = new ArrayList<>();
+        List<Empresa> empresasEncontradas = new ArrayList<>();
 
-        for (Empresa empresa : dados.getEmpresas().values()) {
-            if (empresa.getIdDono() == idDono && empresa.getNome().equals(nome)) {
-                lista.add(empresa);
+        for (Empresa empresa : dadosDoSistema.getEmpresas().values()) {
+            if (empresa.getIdDoDono() == idDoDono && empresa.getNome().equals(nome)) {
+                empresasEncontradas.add(empresa);
             }
         }
 
-        if (lista.isEmpty()) {
+        if (empresasEncontradas.isEmpty()) {
             throw new MyFoodException("Nao existe empresa com esse nome");
         }
 
-        if (indice >= lista.size()) {
+        if (indice >= empresasEncontradas.size()) {
             throw new MyFoodException("Indice maior que o esperado");
         }
 
-        return lista.get(indice).getId();
+        return empresasEncontradas.get(indice).getId();
     }
 
-    public String getAtributoEmpresa(int idEmpresa, String atributo) throws Exception {
-        Empresa empresa = dados.getEmpresas().get(idEmpresa);
+    public String getAtributoEmpresa(int idDaEmpresa, String atributo) throws Exception {
+        Empresa empresa = dadosDoSistema.getEmpresas().get(idDaEmpresa);
 
         if (empresa == null) {
             throw new MyFoodException("Empresa nao cadastrada");
@@ -191,31 +186,28 @@ public class EmpresaService {
 
         if ("nome".equals(atributo)) return empresa.getNome();
         if ("endereco".equals(atributo)) return empresa.getEndereco();
-        if ("dono".equals(atributo)) return dados.getUsuarios().get(empresa.getIdDono()).getNome();
+        if ("dono".equals(atributo)) return dadosDoSistema.getUsuarios().get(empresa.getIdDoDono()).getNome();
 
-        if (empresa instanceof Restaurante) {
-            Restaurante restaurante = (Restaurante) empresa;
+        if (empresa instanceof Restaurante restaurante) {
             if ("tipoCozinha".equals(atributo)) return restaurante.getTipoCozinha();
         }
 
-        if (empresa instanceof Mercado) {
-            Mercado mercado = (Mercado) empresa;
+        if (empresa instanceof Mercado mercado) {
             if ("abre".equals(atributo)) return mercado.getAbre();
             if ("fecha".equals(atributo)) return mercado.getFecha();
             if ("tipoMercado".equals(atributo)) return mercado.getTipoMercado();
         }
 
-        if (empresa instanceof Farmacia) {
-            Farmacia farmacia = (Farmacia) empresa;
+        if (empresa instanceof Farmacia farmacia) {
             if ("aberto24Horas".equals(atributo)) return String.valueOf(farmacia.isAberto24Horas());
-            if ("numeroFuncionarios".equals(atributo)) return String.valueOf(farmacia.getNumeroFuncionarios());
+            if ("numeroFuncionarios".equals(atributo)) return String.valueOf(farmacia.getNumeroDeFuncionarios());
         }
 
         throw new MyFoodException("Atributo invalido");
     }
 
-    private void validarTipoEmpresa(String tipoEmpresa, String esperado) throws Exception {
-        if (textoVazio(tipoEmpresa) || !tipoEmpresa.equals(esperado)) {
+    private void validarTipoEmpresa(String tipoEmpresa, String tipoEsperado) throws Exception {
+        if (textoVazio(tipoEmpresa) || !tipoEmpresa.equals(tipoEsperado)) {
             throw new MyFoodException("Tipo de empresa invalido");
         }
     }
@@ -232,18 +224,18 @@ public class EmpresaService {
         }
     }
 
-    private void validarDono(int dono) throws Exception {
-        Usuario usuario = dados.getUsuarios().get(dono);
+    private void validarDono(int idDoDono) throws Exception {
+        Usuario usuario = dadosDoSistema.getUsuarios().get(idDoDono);
 
         if (usuario == null || !usuario.ehDono()) {
             throw new MyFoodException("Usuario nao pode criar uma empresa");
         }
     }
 
-    private void validarDuplicidade(int dono, String nome, String endereco) throws Exception {
-        for (Empresa empresa : dados.getEmpresas().values()) {
+    private void validarDuplicidade(int idDoDono, String nome, String endereco) throws Exception {
+        for (Empresa empresa : dadosDoSistema.getEmpresas().values()) {
             if (empresa.getNome().equals(nome)) {
-                if (empresa.getIdDono() != dono) {
+                if (empresa.getIdDoDono() != idDoDono) {
                     throw new MyFoodException("Empresa com esse nome ja existe");
                 }
 
@@ -259,12 +251,12 @@ public class EmpresaService {
             throw new MyFoodException("Tipo de mercado invalido");
         }
 
-        boolean valido =
+        boolean tipoValido =
                 tipoMercado.equals("supermercado") ||
                         tipoMercado.equals("minimercado") ||
                         tipoMercado.equals("atacadista");
 
-        if (!valido) {
+        if (!tipoValido) {
             throw new MyFoodException("Tipo de mercado invalido");
         }
     }
@@ -274,11 +266,11 @@ public class EmpresaService {
             throw new MyFoodException("Horario invalido");
         }
 
-        if (!formatoHoraValido(abre) || !formatoHoraValido(fecha)) {
+        if (!formatoDeHoraValido(abre) || !formatoDeHoraValido(fecha)) {
             throw new MyFoodException("Formato de hora invalido");
         }
 
-        if (!intervaloHoraValido(abre, fecha)) {
+        if (!intervaloDeHoraValido(abre, fecha)) {
             throw new MyFoodException("Horario invalido");
         }
     }
@@ -288,35 +280,35 @@ public class EmpresaService {
             throw new MyFoodException("Horario invalido");
         }
 
-        if (!formatoHoraValido(abre) || !formatoHoraValido(fecha)) {
+        if (!formatoDeHoraValido(abre) || !formatoDeHoraValido(fecha)) {
             throw new MyFoodException("Formato de hora invalido");
         }
 
-        if (!intervaloHoraValido(abre, fecha)) {
+        if (!intervaloDeHoraValido(abre, fecha)) {
             throw new MyFoodException("Horario invalido");
         }
     }
 
-    private boolean formatoHoraValido(String hora) {
+    private boolean formatoDeHoraValido(String hora) {
         return hora.matches("\\d{2}:\\d{2}");
     }
 
-    private boolean intervaloHoraValido(String abre, String fecha) {
-        int horaAbre = Integer.parseInt(abre.substring(0, 2));
-        int minutoAbre = Integer.parseInt(abre.substring(3, 5));
+    private boolean intervaloDeHoraValido(String abre, String fecha) {
+        int horaDeAbertura = Integer.parseInt(abre.substring(0, 2));
+        int minutoDeAbertura = Integer.parseInt(abre.substring(3, 5));
 
-        int horaFecha = Integer.parseInt(fecha.substring(0, 2));
-        int minutoFecha = Integer.parseInt(fecha.substring(3, 5));
+        int horaDeFechamento = Integer.parseInt(fecha.substring(0, 2));
+        int minutoDeFechamento = Integer.parseInt(fecha.substring(3, 5));
 
-        if (horaAbre < 0 || horaAbre > 23) return false;
-        if (minutoAbre < 0 || minutoAbre > 59) return false;
-        if (horaFecha < 0 || horaFecha > 23) return false;
-        if (minutoFecha < 0 || minutoFecha > 59) return false;
+        if (horaDeAbertura < 0 || horaDeAbertura > 23) return false;
+        if (minutoDeAbertura < 0 || minutoDeAbertura > 59) return false;
+        if (horaDeFechamento < 0 || horaDeFechamento > 23) return false;
+        if (minutoDeFechamento < 0 || minutoDeFechamento > 59) return false;
 
-        int totalAbre = horaAbre * 60 + minutoAbre;
-        int totalFecha = horaFecha * 60 + minutoFecha;
+        int totalDeAbertura = horaDeAbertura * 60 + minutoDeAbertura;
+        int totalDeFechamento = horaDeFechamento * 60 + minutoDeFechamento;
 
-        return totalFecha > totalAbre;
+        return totalDeFechamento > totalDeAbertura;
     }
 
     private boolean textoVazio(String texto) {

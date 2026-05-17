@@ -11,11 +11,11 @@ public class DadosSistema implements Serializable {
     private Map<Integer, Pedido> pedidos;
     private Map<Integer, Entrega> entregas;
 
-    private int proximoIdUsuario;
-    private int proximoIdEmpresa;
-    private int proximoIdProduto;
-    private int proximoNumeroPedido;
-    private int proximoIdEntrega;
+    private int proximoIdDeUsuario;
+    private int proximoIdDeEmpresa;
+    private int proximoIdDeProduto;
+    private int proximoNumeroDePedido;
+    private int proximoIdDeEntrega;
 
     public DadosSistema() {
         this.usuarios = new LinkedHashMap<>();
@@ -23,11 +23,11 @@ public class DadosSistema implements Serializable {
         this.produtos = new LinkedHashMap<>();
         this.pedidos = new LinkedHashMap<>();
         this.entregas = new LinkedHashMap<>();
-        this.proximoIdUsuario = 1;
-        this.proximoIdEmpresa = 1;
-        this.proximoIdProduto = 1;
-        this.proximoNumeroPedido = 1;
-        this.proximoIdEntrega = 1;
+        this.proximoIdDeUsuario = 1;
+        this.proximoIdDeEmpresa = 1;
+        this.proximoIdDeProduto = 1;
+        this.proximoNumeroDePedido = 1;
+        this.proximoIdDeEntrega = 1;
     }
 
     public Map<Integer, Usuario> getUsuarios() {
@@ -50,43 +50,43 @@ public class DadosSistema implements Serializable {
         return entregas;
     }
 
-    public int getProximoIdUsuario() {
-        return proximoIdUsuario;
+    public int getProximoIdDeUsuario() {
+        return proximoIdDeUsuario;
     }
 
-    public void setProximoIdUsuario(int proximoIdUsuario) {
-        this.proximoIdUsuario = proximoIdUsuario;
+    public void setProximoIdDeUsuario(int proximoIdDeUsuario) {
+        this.proximoIdDeUsuario = proximoIdDeUsuario;
     }
 
-    public int getProximoIdEmpresa() {
-        return proximoIdEmpresa;
+    public int getProximoIdDeEmpresa() {
+        return proximoIdDeEmpresa;
     }
 
-    public void setProximoIdEmpresa(int proximoIdEmpresa) {
-        this.proximoIdEmpresa = proximoIdEmpresa;
+    public void setProximoIdDeEmpresa(int proximoIdDeEmpresa) {
+        this.proximoIdDeEmpresa = proximoIdDeEmpresa;
     }
 
-    public int getProximoIdProduto() {
-        return proximoIdProduto;
+    public int getProximoIdDeProduto() {
+        return proximoIdDeProduto;
     }
 
-    public void setProximoIdProduto(int proximoIdProduto) {
-        this.proximoIdProduto = proximoIdProduto;
+    public void setProximoIdDeProduto(int proximoIdDeProduto) {
+        this.proximoIdDeProduto = proximoIdDeProduto;
     }
 
-    public int getProximoNumeroPedido() {
-        return proximoNumeroPedido;
+    public int getProximoNumeroDePedido() {
+        return proximoNumeroDePedido;
     }
 
-    public void setProximoNumeroPedido(int proximoNumeroPedido) {
-        this.proximoNumeroPedido = proximoNumeroPedido;
+    public void setProximoNumeroDePedido(int proximoNumeroDePedido) {
+        this.proximoNumeroDePedido = proximoNumeroDePedido;
     }
 
-    public int getProximoIdEntrega() {
-        return proximoIdEntrega;
+    public int getProximoIdDeEntrega() {
+        return proximoIdDeEntrega;
     }
 
-    public void setProximoIdEntrega(int proximoIdEntrega) {
-        this.proximoIdEntrega = proximoIdEntrega;
+    public void setProximoIdDeEntrega(int proximoIdDeEntrega) {
+        this.proximoIdDeEntrega = proximoIdDeEntrega;
     }
 }

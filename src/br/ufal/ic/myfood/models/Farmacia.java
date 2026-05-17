@@ -2,20 +2,20 @@ package br.ufal.ic.myfood.models;
 
 public class Farmacia extends Empresa {
     private boolean aberto24Horas;
-    private int numeroFuncionarios;
+    private int numeroDeFuncionarios;
 
-    public Farmacia(int id, String nome, String endereco, int idDono, boolean aberto24Horas, int numeroFuncionarios) {
-        super(id, nome, endereco, idDono);
+    public Farmacia(int id, String nome, String endereco, int idDoDono, boolean aberto24Horas, int numeroDeFuncionarios) {
+        super(id, nome, endereco, idDoDono);
         this.aberto24Horas = aberto24Horas;
-        this.numeroFuncionarios = numeroFuncionarios;
+        this.numeroDeFuncionarios = numeroDeFuncionarios;
     }
 
     public boolean isAberto24Horas() {
         return aberto24Horas;
     }
 
-    public int getNumeroFuncionarios() {
-        return numeroFuncionarios;
+    public int getNumeroDeFuncionarios() {
+        return numeroDeFuncionarios;
     }
 
     @Override

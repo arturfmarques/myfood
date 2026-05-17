@@ -6,14 +6,14 @@ import java.util.List;
 public class Entregador extends Usuario {
     private String veiculo;
     private String placa;
-    private List<Integer> idsEmpresas;
+    private List<Integer> idsDasEmpresas;
     private boolean emEntrega;
 
     public Entregador(int id, String nome, String email, String senha, String endereco, String veiculo, String placa) {
         super(id, nome, email, senha, endereco);
         this.veiculo = veiculo;
         this.placa = placa;
-        this.idsEmpresas = new ArrayList<>();
+        this.idsDasEmpresas = new ArrayList<>();
         this.emEntrega = false;
     }
 
@@ -25,8 +25,8 @@ public class Entregador extends Usuario {
         return placa;
     }
 
-    public List<Integer> getIdsEmpresas() {
-        return idsEmpresas;
+    public List<Integer> getIdsDasEmpresas() {
+        return idsDasEmpresas;
     }
 
     public boolean isEmEntrega() {

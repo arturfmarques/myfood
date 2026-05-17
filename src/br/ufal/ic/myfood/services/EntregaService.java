@@ -7,39 +7,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntregaService {
-    private DadosSistema dados;
+    private DadosSistema dadosDoSistema;
 
-    public EntregaService(DadosSistema dados) {
-        this.dados = dados;
+    public EntregaService(DadosSistema dadosDoSistema) {
+        this.dadosDoSistema = dadosDoSistema;
     }
 
-    public int obterPedido(int entregadorId) throws Exception {
-        Usuario usuario = dados.getUsuarios().get(entregadorId);
+    public int obterPedido(int idDoEntregador) throws Exception {
+        Usuario usuario = dadosDoSistema.getUsuarios().get(idDoEntregador);
 
-        if (!(usuario instanceof Entregador)) {
+        if (!(usuario instanceof Entregador entregador)) {
             throw new MyFoodException("Usuario nao e um entregador");
         }
 
-        Entregador entregador = (Entregador) usuario;
-
-        if (entregador.getIdsEmpresas().isEmpty()) {
+        if (entregador.getIdsDasEmpresas().isEmpty()) {
             throw new MyFoodException("Entregador nao estar em nenhuma empresa.");
         }
 
-        for (Pedido pedido : dados.getPedidos().values()) {
+        for (Pedido pedido : dadosDoSistema.getPedidos().values()) {
             if ("pronto".equals(pedido.getEstado()) &&
-                    entregador.getIdsEmpresas().contains(pedido.getIdEmpresa())) {
+                    entregador.getIdsDasEmpresas().contains(pedido.getIdDaEmpresa())) {
 
-                Empresa empresa = dados.getEmpresas().get(pedido.getIdEmpresa());
+                Empresa empresa = dadosDoSistema.getEmpresas().get(pedido.getIdDaEmpresa());
                 if (empresa instanceof Farmacia) {
                     return pedido.getNumero();
                 }
             }
         }
 
-        for (Pedido pedido : dados.getPedidos().values()) {
+        for (Pedido pedido : dadosDoSistema.getPedidos().values()) {
             if ("pronto".equals(pedido.getEstado()) &&
-                    entregador.getIdsEmpresas().contains(pedido.getIdEmpresa())) {
+                    entregador.getIdsDasEmpresas().contains(pedido.getIdDaEmpresa())) {
                 return pedido.getNumero();
             }
         }
@@ -47,66 +45,64 @@ public class EntregaService {
         throw new MyFoodException("Nao existe pedido para entrega");
     }
 
-    public int criarEntrega(int pedidoId, int entregadorId, String destino) throws Exception {
-        Pedido pedido = dados.getPedidos().get(pedidoId);
+    public int criarEntrega(int numeroDoPedido, int idDoEntregador, String destino) throws Exception {
+        Pedido pedido = dadosDoSistema.getPedidos().get(numeroDoPedido);
 
         if (pedido == null || !"pronto".equals(pedido.getEstado())) {
             throw new MyFoodException("Pedido nao esta pronto para entrega");
         }
 
-        Usuario usuario = dados.getUsuarios().get(entregadorId);
+        Usuario usuario = dadosDoSistema.getUsuarios().get(idDoEntregador);
 
-        if (!(usuario instanceof Entregador)) {
+        if (!(usuario instanceof Entregador entregador)) {
             throw new MyFoodException("Nao e um entregador valido");
         }
-
-        Entregador entregador = (Entregador) usuario;
 
         if (entregador.isEmEntrega()) {
             throw new MyFoodException("Entregador ainda em entrega");
         }
 
-        Usuario cliente = dados.getUsuarios().get(pedido.getIdCliente());
-        Empresa empresa = dados.getEmpresas().get(pedido.getIdEmpresa());
+        Usuario cliente = dadosDoSistema.getUsuarios().get(pedido.getIdDoCliente());
+        Empresa empresa = dadosDoSistema.getEmpresas().get(pedido.getIdDaEmpresa());
 
         String destinoFinal = destino;
         if (destinoFinal == null || destinoFinal.trim().isEmpty()) {
             destinoFinal = cliente.getEndereco();
         }
 
-        List<String> produtos = new ArrayList<>();
-        for (Integer idProduto : pedido.getIdsProdutos()) {
-            produtos.add(dados.getProdutos().get(idProduto).getNome());
+        List<String> nomesDosProdutos = new ArrayList<>();
+        for (Integer idDoProduto : pedido.getIdsDosProdutos()) {
+            nomesDosProdutos.add(dadosDoSistema.getProdutos().get(idDoProduto).getNome());
         }
 
-        int idEntrega = dados.getProximoIdEntrega();
+        int idDaEntrega = dadosDoSistema.getProximoIdDeEntrega();
 
         Entrega entrega = new Entrega(
-                idEntrega,
+                idDaEntrega,
                 cliente.getNome(),
                 empresa.getNome(),
-                pedidoId,
-                entregadorId,
+                numeroDoPedido,
+                idDoEntregador,
                 entregador.getNome(),
                 destinoFinal,
-                produtos
+                nomesDosProdutos
         );
 
-        dados.getEntregas().put(idEntrega, entrega);
-        dados.setProximoIdEntrega(idEntrega + 1);
+        dadosDoSistema.getEntregas().put(idDaEntrega, entrega);
+        dadosDoSistema.setProximoIdDeEntrega(idDaEntrega + 1);
 
         pedido.setEstado("entregando");
         entregador.setEmEntrega(true);
 
-        return idEntrega;
+        return idDaEntrega;
     }
 
-    public String getEntrega(int idEntrega, String atributo) throws Exception {
+    public String getEntrega(int idDaEntrega, String atributo) throws Exception {
         if (atributo == null || atributo.trim().isEmpty()) {
             throw new MyFoodException("Atributo invalido");
         }
 
-        Entrega entrega = dados.getEntregas().get(idEntrega);
+        Entrega entrega = dadosDoSistema.getEntregas().get(idDaEntrega);
 
         if (entrega == null) {
             throw new MyFoodException("Entrega nao encontrada");
@@ -114,7 +110,7 @@ public class EntregaService {
 
         if ("cliente".equals(atributo)) return entrega.getCliente();
         if ("empresa".equals(atributo)) return entrega.getEmpresa();
-        if ("pedido".equals(atributo)) return String.valueOf(entrega.getPedido());
+        if ("pedido".equals(atributo)) return String.valueOf(entrega.getNumeroDoPedido());
         if ("entregador".equals(atributo)) return entrega.getEntregador();
         if ("destino".equals(atributo)) return entrega.getDestino();
         if ("produtos".equals(atributo)) return "{[" + String.join(", ", entrega.getProdutos()) + "]}";
@@ -122,9 +118,9 @@ public class EntregaService {
         throw new MyFoodException("Atributo nao existe");
     }
 
-    public int getIdEntrega(int pedidoId) throws Exception {
-        for (Entrega entrega : dados.getEntregas().values()) {
-            if (entrega.getPedido() == pedidoId) {
+    public int getIdEntrega(int numeroDoPedido) throws Exception {
+        for (Entrega entrega : dadosDoSistema.getEntregas().values()) {
+            if (entrega.getNumeroDoPedido() == numeroDoPedido) {
                 return entrega.getId();
             }
         }
@@ -132,17 +128,17 @@ public class EntregaService {
         throw new MyFoodException("Nao existe entrega com esse id");
     }
 
-    public void entregar(int idEntrega) throws Exception {
-        Entrega entrega = dados.getEntregas().get(idEntrega);
+    public void entregar(int idDaEntrega) throws Exception {
+        Entrega entrega = dadosDoSistema.getEntregas().get(idDaEntrega);
 
         if (entrega == null) {
             throw new MyFoodException("Nao existe nada para ser entregue com esse id");
         }
 
-        Pedido pedido = dados.getPedidos().get(entrega.getPedido());
+        Pedido pedido = dadosDoSistema.getPedidos().get(entrega.getNumeroDoPedido());
         pedido.setEstado("entregue");
 
-        Entregador entregador = (Entregador) dados.getUsuarios().get(entrega.getIdEntregador());
+        Entregador entregador = (Entregador) dadosDoSistema.getUsuarios().get(entrega.getIdDoEntregador());
         entregador.setEmEntrega(false);
     }
 }

@@ -22,7 +22,7 @@ public class PersistenciaService {
         }
     }
 
-    public void salvar(DadosSistema dados) {
+    public void salvar(DadosSistema dadosDoSistema) {
         try {
             File pasta = new File(PASTA);
             if (!pasta.exists()) {
@@ -30,7 +30,7 @@ public class PersistenciaService {
             }
 
             try (ObjectOutputStream saida = new ObjectOutputStream(new FileOutputStream(ARQUIVO))) {
-                saida.writeObject(dados);
+                saida.writeObject(dadosDoSistema);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

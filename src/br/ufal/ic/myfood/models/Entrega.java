@@ -7,18 +7,18 @@ public class Entrega implements Serializable {
     private int id;
     private String cliente;
     private String empresa;
-    private int pedido;
-    private int idEntregador;
+    private int numeroDoPedido;
+    private int idDoEntregador;
     private String entregador;
     private String destino;
     private List<String> produtos;
 
-    public Entrega(int id, String cliente, String empresa, int pedido, int idEntregador, String entregador, String destino, List<String> produtos) {
+    public Entrega(int id, String cliente, String empresa, int numeroDoPedido, int idDoEntregador, String entregador, String destino, List<String> produtos) {
         this.id = id;
         this.cliente = cliente;
         this.empresa = empresa;
-        this.pedido = pedido;
-        this.idEntregador = idEntregador;
+        this.numeroDoPedido = numeroDoPedido;
+        this.idDoEntregador = idDoEntregador;
         this.entregador = entregador;
         this.destino = destino;
         this.produtos = produtos;
@@ -36,12 +36,12 @@ public class Entrega implements Serializable {
         return empresa;
     }
 
-    public int getPedido() {
-        return pedido;
+    public int getNumeroDoPedido() {
+        return numeroDoPedido;
     }
 
-    public int getIdEntregador() {
-        return idEntregador;
+    public int getIdDoEntregador() {
+        return idDoEntregador;
     }
 
     public String getEntregador() {

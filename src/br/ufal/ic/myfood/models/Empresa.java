@@ -8,17 +8,17 @@ public abstract class Empresa implements Serializable {
     private int id;
     private String nome;
     private String endereco;
-    private int idDono;
-    private List<Integer> idsProdutos;
-    private List<Integer> idsEntregadores;
+    private int idDoDono;
+    private List<Integer> idsDosProdutos;
+    private List<Integer> idsDosEntregadores;
 
-    public Empresa(int id, String nome, String endereco, int idDono) {
+    public Empresa(int id, String nome, String endereco, int idDoDono) {
         this.id = id;
         this.nome = nome;
         this.endereco = endereco;
-        this.idDono = idDono;
-        this.idsProdutos = new ArrayList<>();
-        this.idsEntregadores = new ArrayList<>();
+        this.idDoDono = idDoDono;
+        this.idsDosProdutos = new ArrayList<>();
+        this.idsDosEntregadores = new ArrayList<>();
     }
 
     public int getId() {
@@ -33,16 +33,16 @@ public abstract class Empresa implements Serializable {
         return endereco;
     }
 
-    public int getIdDono() {
-        return idDono;
+    public int getIdDoDono() {
+        return idDoDono;
     }
 
-    public List<Integer> getIdsProdutos() {
-        return idsProdutos;
+    public List<Integer> getIdsDosProdutos() {
+        return idsDosProdutos;
     }
 
-    public List<Integer> getIdsEntregadores() {
-        return idsEntregadores;
+    public List<Integer> getIdsDosEntregadores() {
+        return idsDosEntregadores;
     }
 
     public abstract String getTipoEmpresa();

@@ -3,8 +3,8 @@ package br.ufal.ic.myfood.models;
 public class Restaurante extends Empresa {
     private String tipoCozinha;
 
-    public Restaurante(int id, String nome, String endereco, int idDono, String tipoCozinha) {
-        super(id, nome, endereco, idDono);
+    public Restaurante(int id, String nome, String endereco, int idDoDono, String tipoCozinha) {
+        super(id, nome, endereco, idDoDono);
         this.tipoCozinha = tipoCozinha;
     }
 
